@@ -12,50 +12,45 @@ npm install --save react-validated
 
 ## Usage
 
+Before:
+
 ```jsx
-import React, { Component } from 'react'
-
-import { ValidatedInput, ValidatedForm } from 'react-validated';
-
-//...
-
-class Example extends Component {
-
-  // ...
-
-  handleInputChange = () => {
-    // ...
-  }
-
-  onSave = () => {
-    // ...
-  }
 
   render () {
     return (
-        <ValidatedForm onSubmit={this.onSave}>
-          <div className="form-group row">
-            <label htmlFor="name" className="col-sm-1 col-form-label">Name</label>
-            <div className="col-sm-4">
-              <ValidatedInput required min-length={{ params: 5 }}>
-                <input type="text" className="form-control" id="name" placeholder="Enter a Name"
-                  name="name" onChange={this.handleInputChange} value={this.state.name}
-                />
-              </ValidatedInput>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-sm-10 text-right">
-              <button type="submit" className="btn btn-primary" data-background-color="orange">
-                Save
-              </button>
-            </div>
-          </div>
-        </ValidatedForm>
+      <form onSubmit={this.onSave}>
+        <input type="text" placeholder="Enter a Name"
+          name="name" onChange={this.handleInputChange} value={this.state.name} />
+        <button type="submit" className="btn btn-primary" data-background-color="orange">
+          Save
+        </button>
+      </form>
     )
   }
 }
 ```
+
+After:
+
+```jsx
+
+  render () {
+    return (
+      <ValidatedForm onSubmit={this.onSave}>
+        <ValidatedInput required min-length={{ params: 5 }}>
+          <input type="text" className="form-control" id="name" placeholder="Enter a Name"
+            name="name" onChange={this.handleInputChange} value={this.state.name} />
+        </ValidatedInput>
+        <button type="submit" className="btn btn-primary" data-background-color="orange">
+          Save
+        </button>
+      </ValidatedForm>
+    )
+  }
+}
+```
+
+Note that onSubmit will only be triggered if validation passes.
 
 ## License
 
