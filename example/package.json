@@ -1,14 +1,14 @@
 {
   "name": "react-validated-example",
-  "homepage": "https://visargashi.github.io/react-validated",
+  "homepage": "https://github.com/Polymath-Labs/react-validated#readme",
   "version": "0.0.0",
   "private": true,
-  "license": "MIT",
+  "license": "SEE LICENSE IN ../LICENSE",
   "dependencies": {
+    "bootstrap": "^4.1.1",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-validated": "*",
     "react-scripts": "^1.1.1"
   },
   "scripts": {

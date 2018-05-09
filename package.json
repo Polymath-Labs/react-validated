@@ -1,10 +1,22 @@
 {
   "name": "react-validated",
-  "version": "1.0.0",
-  "description": "react",
-  "author": "visargashi",
-  "license": "MIT",
-  "repository": "visargashi/react-validated",
+  "version": "0.0.1",
+  "description": "Polymath Labs React form validation library",
+  "author": "Polymath Labs",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Polymath-Labs/react-validated.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Polymath-Labs/react-validated/issues"
+  },
+  "homepage": "https://github.com/Polymath-Labs/react-validated#readme",
+  "keywords": [
+    "react",
+    "validation",
+    "polymath labs"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
