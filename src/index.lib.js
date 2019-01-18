@@ -1,8 +1,8 @@
 import React from 'react';
 
-import './index.css';
-import RequiredValidator from './required-validator';
-import { MinLengthValidator } from './length-validator';
+import './styles.css';
+import RequiredValidator from './validators/required-validator';
+import { MinLengthValidator } from './validators/length-validator';
 
 const VALIDATION_RULES = {};
 VALIDATION_RULES[RequiredValidator.name] = RequiredValidator;
