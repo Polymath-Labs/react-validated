@@ -1,11 +1,11 @@
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const pkg = require('./package.json');
 const path = require('path');
 const libraryName= pkg.name;
 
 module.exports = {
-    entry: path.join(__dirname, "./src/index.jsx"),
+    entry: path.join(__dirname, "./src/index.lib.js"),
     output: {
         path: path.join(__dirname, './dist'),
         filename: 'react-validated.js',
@@ -15,7 +15,7 @@ module.exports = {
         umdNamedDefine: true
     },
     plugins: [
-        new ExtractTextPlugin({
+        new MiniCssExtractPlugin({
             filename: 'react-validated.css',
         }),
     ],
@@ -42,17 +42,32 @@ module.exports = {
         },
         {
             test: /\.*css$/,
-            use : ExtractTextPlugin.extract({
-                fallback : 'style-loader',
-                use : [
-                    'css-loader',
-                    'sass-loader'
-                ]
-            })
+            use: [{
+                loader: MiniCssExtractPlugin.loader
+            },
+
+            {
+                loader: "css-loader",
+            },
+
+            {
+                loader: 'sass-loader'
+            }],
         },
         {
             test: /\.(js|jsx)$/,
-            use: ["babel-loader"],
+            use: {
+                loader: "babel-loader",
+                options: {
+                    presets: [
+                        "@babel/preset-env",
+                        "@babel/preset-react"
+                    ],
+                    plugins: [
+                        "@babel/plugin-proposal-class-properties"
+                    ],
+                },
+            },
             include: path.resolve(__dirname, "src"),
             exclude: /node_modules/,
         },
@@ -70,7 +85,7 @@ module.exports = {
             'react': path.resolve(__dirname, './node_modules/react') ,
             'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
             'assets': path.resolve(__dirname, 'assets')
-        } 
+        },
     },
     externals: {
         // Don't bundle react or react-dom
