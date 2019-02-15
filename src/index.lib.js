@@ -2,12 +2,12 @@ import React from 'react';
 
 import './styles.css';
 import RequiredValidator from './validators/required-validator';
-import { MinLengthValidator } from './validators/length-validator';
+import { MinLengthValidator, MaxLengthValidator } from './validators/length-validator';
 
 const VALIDATION_RULES = {};
 VALIDATION_RULES[RequiredValidator.name] = RequiredValidator;
 VALIDATION_RULES[MinLengthValidator.name] = MinLengthValidator;
-
+VALIDATION_RULES[MaxLengthValidator.name] = MaxLengthValidator;
 export class ValidatedInput extends React.Component {
 
     constructor(props) {
@@ -16,7 +16,7 @@ export class ValidatedInput extends React.Component {
         let inputs = 0;
         let fieldName;
         React.Children.forEach(this.props.children, (child) => {
-            if (child.type === 'input') {
+            if (child.type === 'input' || child.type === 'textarea') {
                 inputs++;
                 fieldName = child.props.name;
             }
@@ -53,19 +53,20 @@ export class ValidatedInput extends React.Component {
         return (
             <div className="validated">
                 {React.Children.map(this.props.children, (child) => {
-                    if (child.type !== 'input') {
-                        return child;
+                    if (child.type == 'input' || child.type == 'textarea') {
+                        return React.cloneElement(child, {
+                            onChange: (...args) => {
+                                if (child.props.onChange) {
+                                    child.props.onChange.apply(child, args);
+                                }
+                                $this._onChangeOrBlur(...args);
+                            },
+                            onBlur: $this._onChangeOrBlur.bind($this),
+                            ref: '_input'
+                        })
                     }
-                    return React.cloneElement(child, {
-                        onChange: (...args) => {
-                            if (child.props.onChange) {
-                                child.props.onChange.apply(child, args);
-                            }
-                            $this._onChangeOrBlur(...args);
-                        },
-                        onBlur: $this._onChangeOrBlur.bind($this),
-                        ref: '_input'
-                    })
+
+                    return child;
                 })}
                 <div className="validation-message">{this.state.validation.message}</div>
             </div>
@@ -73,7 +74,7 @@ export class ValidatedInput extends React.Component {
     }
 
     validate = () => {
-        //console.log('this.refs', this.refs);
+        // console.log('this.refs', this.refs);
         return this._validate(this.refs._input, this.refs._input.value);
     }
 
