@@ -5,6 +5,7 @@ import RequiredValidator from './validators/required-validator';
 import RequiredCheckboxValidator from './validators/required-checkbox-validator';
 import RequiredRadioValidator from './validators/required-radio-validator';
 import { MinLengthValidator, MaxLengthValidator } from './validators/length-validator';
+import { MinCheckedValidator, MaxCheckedValidator } from './validators/checkbox-length-validator';
 
 const VALIDATION_RULES = {};
 VALIDATION_RULES[RequiredValidator.name] = RequiredValidator;
@@ -127,25 +128,25 @@ export class ValidatedCheckboxGroup extends React.Component {
             }
         });
 
-        const REQUIRED_VALIDATION_RULE = {};
-        REQUIRED_VALIDATION_RULE[RequiredCheckboxValidator.name] = RequiredCheckboxValidator;
-        REQUIRED_VALIDATION_RULE[MinLengthValidator] = MinLengthValidator;
-        REQUIRED_VALIDATION_RULE[MaxLengthValidator] = MaxLengthValidator;
+        const CHECKBOX_VALIDATION_RULES = {};
+        CHECKBOX_VALIDATION_RULES[RequiredCheckboxValidator.name] = RequiredCheckboxValidator;
+        CHECKBOX_VALIDATION_RULES[MinCheckedValidator.name] = MinCheckedValidator;
+        CHECKBOX_VALIDATION_RULES[MaxCheckedValidator.name] = MaxCheckedValidator;
 
         const validation = { rules: [] };
         for (var property in props) {
-            if (REQUIRED_VALIDATION_RULE.hasOwnProperty(property)) {
+            if (CHECKBOX_VALIDATION_RULES.hasOwnProperty(property)) {
                 let message = (typeof props[property] === 'string' && props[property]) ||
                     (typeof props[property] === 'object' && props[property].message) ||
-                    REQUIRED_VALIDATION_RULE[property].message;
+                    CHECKBOX_VALIDATION_RULES[property].message;
                 let params = typeof props[property] === 'object' && props[property].params;
                 let configuredRule = {
-                    name: REQUIRED_VALIDATION_RULE[property].name,
+                    name: CHECKBOX_VALIDATION_RULES[property].name,
                     message: message,
                     params: params,
                     field: fieldName
                 };
-                configuredRule.validate = REQUIRED_VALIDATION_RULE[property].validate.bind(configuredRule);
+                configuredRule.validate = CHECKBOX_VALIDATION_RULES[property].validate.bind(configuredRule);
                 // console.log('configured rule', configuredRule);
                 validation.rules.push(configuredRule)
             }
