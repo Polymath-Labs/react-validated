@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  react-validated-lib:
+    image: react-validated
+    container_name: react-validated-lib
+    build:
+      context: ./
+      dockerfile: dockerfile
+    volumes:
+      - .:/react-validated
+    ports:
+      - "3001:3001"
