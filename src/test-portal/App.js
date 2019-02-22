@@ -18,14 +18,18 @@ export default class App extends Component {
       size: '',
       ingredients: [],
       minLength: this.config.minLength,
-      maxLength: this.config.maxLength
+      maxLength: this.config.maxLength,
+      minChecked: this.config.minChecked,
+      maxChecked: this.config.maxChecked
     }
   }
 
   buildConfig = () => {
     const config = {
       minLength: 3,
-      maxLength: 10
+      maxLength: 10,
+      minChecked: 1,
+      maxChecked: 3
     }
     const args = window.location.search.split('&') || [];
     for (let index = 0; index < args.length; index++) {
@@ -38,7 +42,15 @@ export default class App extends Component {
         case 'maxLength':
         case '?maxLength':
           config.maxLength = parseInt(keyValue[1], 10);
-          break; 
+          break;
+        case 'minChecked':
+        case '?minChecked':
+          config.minChecked = parseInt(keyValue[1], 10);
+          break;
+        case 'maxChecked':
+        case '?maxChecked':
+          config.maxChecked = parseInt(keyValue[1], 10);
+          break;
         default:
         // nothing to do
       }
@@ -56,6 +68,18 @@ export default class App extends Component {
     this.setState({
       [name]: value
     });
+  }
+
+  handleCheckboxChange = (event) => {
+    if(this.state.ingredients.indexOf(event.target.value) !== -1) {
+      this.setState({ingredients: this.state.ingredients.filter((ingredient) => {
+        return ingredient !== event.target.value;
+      })});
+    } else {
+      this.setState({
+        ingredients: [...this.state.ingredients, event.target.value]
+      })
+    }
   }
 
 
@@ -150,14 +174,16 @@ export default class App extends Component {
                 <div className="form-group row">
                   <label htmlFor="inlineRadioOptions" className="col-2 text-right col-form-label">Ingredients:</label>
                   <div className="col-10">
-                    <ValidatedCheckboxGroup>
+                    <ValidatedCheckboxGroup required min-checked={{ params: 2 }} max-checked={{ params: 3 }}>
                       <div className="form-check form-check-inline">
                         <input
                           id="ingredient1"
                           type="checkbox"
                           name="ingredients"
+                          value="peppers"
                           className="form-check-input"
-                          defaultValue="peppers"
+                          checked={this.state.ingredients.indexOf('peppers') > -1}
+                          onChange={this.handleCheckboxChange}
                         />
                         <label className="form-check-label" htmlFor="ingredient1">
                           Green Peppers
@@ -168,8 +194,10 @@ export default class App extends Component {
                           id="ingredient2"
                           type="checkbox"
                           name="ingredients"
+                          value="onions"
                           className="form-check-input"
-                          defaultValue="onions"
+                          checked={this.state.ingredients.indexOf('onions') > -1}
+                          onChange={this.handleCheckboxChange}
                         />
                         <label className="form-check-label" htmlFor="ingredient2">
                           Onions
@@ -180,8 +208,10 @@ export default class App extends Component {
                           id="ingredient3"
                           type="checkbox"
                           name="ingredients"
+                          value="mushrooms"
                           className="form-check-input"
-                          defaultValue="mushrooms"
+                          checked={this.state.ingredients.indexOf('mushrooms') > -1}
+                          onChange={this.handleCheckboxChange}
                         />
                         <label className="form-check-label" htmlFor="ingredient3">
                           Mushrooms
@@ -193,7 +223,9 @@ export default class App extends Component {
                           type="checkbox"
                           name="ingredients"
                           className="form-check-input"
-                          defaultValue="garlic"
+                          value="garlic"
+                          checked={this.state.ingredients.indexOf('garlic') > -1}
+                          onChange={this.handleCheckboxChange}
                         />
                         <label className="form-check-label" htmlFor="ingredient4">
                           Garlic
@@ -205,7 +237,9 @@ export default class App extends Component {
                           id="ingredient5"
                           name="ingredients"
                           className="form-check-input"
-                          defaultValue="olives"
+                          value="olives"
+                          checked={this.state.ingredients.indexOf('olives') > -1}
+                          onChange={this.handleCheckboxChange}
                         />
                         <label className="form-check-label" htmlFor="ingredient5">
                           Olives
@@ -217,7 +251,9 @@ export default class App extends Component {
                           type="checkbox"
                           name="ingredients"
                           className="form-check-input"
-                          defaultValue="pineapples"
+                          value="pineapples"
+                          checked={this.state.ingredients.indexOf('pineapples') > -1}
+                          onChange={this.handleCheckboxChange}
                         />
                         <label className="form-check-label" htmlFor="ingredient6">
                           Pineapples
@@ -254,6 +290,22 @@ export default class App extends Component {
                   <div className="col-10">
                     <input type="number" className="form-control" id="maxLength" placeholder="Enter a max length"
                       name="maxLength" onChange={this.onChange} value={this.state.maxLength}
+                    />
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label htmlFor="minChecked" className="col-2 text-right col-form-label">Min Checked:</label>
+                  <div className="col-10">
+                    <input type="number" className="form-control" id="minChecked" placeholder="Minimum checked values"
+                      name="minChecked" onChange={this.onChange} value={this.state.minChecked}
+                    />
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label htmlFor="maxChecked" className="col-2 text-right col-form-label">Max Checked:</label>
+                  <div className="col-10">
+                    <input type="number" className="form-control" id="maxChecked" placeholder="Maximum checked values"
+                      name="maxChecked" onChange={this.onChange} value={this.state.maxChecked}
                     />
                   </div>
                 </div>

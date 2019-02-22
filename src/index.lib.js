@@ -254,9 +254,10 @@ export class ValidatedRadioGroup extends React.Component {
 
     render = () => {
         const $this = this;
+
         return (
             <div className="validated">
-                {React.Children.map(this.props.children, (child) => {
+                {this.recursiveMapChildElements(this.props.children, (child) => {
                     if (child.type === 'input' && child.props.type === 'radio') {
                         return React.cloneElement(child, {
                             onChange: (...args) => {
@@ -268,52 +269,48 @@ export class ValidatedRadioGroup extends React.Component {
                             onBlur: $this._onChangeOrBlur.bind($this),
                             ref: '_input'
                         })
-                    } else {
-                        // TODO: refactor to recursion
-                        if(typeof child.props.children !== 'undefined' && child.props.children.length > 0) {
-                            child.props.children.map(nestedChildElement => {
-                                if(nestedChildElement.type === 'input' && nestedChildElement.props.type === 'radio') {
-                                    return React.cloneElement(nestedChildElement, {
-                                        onChange: (...args) => {
-                                            if (nestedChildElement.props.onChange) {
-                                                nestedChildElement.props.onChange.apply(child, args);
-                                            }
-                                            $this._onChangeOrBlur(...args);
-                                        },
-                                        onBlur: $this._onChangeOrBlur.bind($this),
-                                        ref: '_input'
-                                    })
-                                }
-                                return nestedChildElement;
-                            })
-                        }
-                        return child;
                     }
+                    return child;
                 })}
                 <div className="validation-message">{this.state.validation.message}</div>
             </div>
         )
     }
+    // TODO: refactor to some util file
+    recursiveMapChildElements = (children, fn) => {
+        return React.Children.map(children, child => {
+            if (!React.isValidElement(child)) {
+                return child;
+            }
+        
+            if (child.props.children) {
+                child = React.cloneElement(child, {
+                children: this.recursiveMapChildElements(child.props.children, fn)
+                });
+            }
+        
+            return fn(child);
+        });
+    }
 
     validate = () => {
-        // console.log('this.refs', this.refs);
+        console.log('this.refs', this.refs);
         return this._validate(this.refs._input, this.refs._input.value);
     }
 
     _onChangeOrBlur = (event) => {
-        //console.log('_onChange', event);
         const target = event.target;
         this._validate(target, target.value);
     }
 
     _validate = (target, value) => {
         const values = [];
-        
-        this.props.children.forEach((child) => {
-            if(typeof child === 'object') {
-               values.push(child.props.checked);
+
+        this.recursiveMapChildElements(this.props.children, (child) => {
+            if(child.type === 'input') {
+                values.push(child.props.checked);
             }
-        });
+        })
 
         if (!this.state.validation || !this.state.validation.rules || !this.state.validation.rules.length) {
             return true;
