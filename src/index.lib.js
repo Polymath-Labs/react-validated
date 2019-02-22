@@ -56,7 +56,7 @@ export class ValidatedInput extends React.Component {
         return (
             <div className="validated">
                 {React.Children.map(this.props.children, (child) => {
-                    if (child.type == 'input' || child.type == 'textarea') {
+                    if (child.type === 'input' || child.type === 'textarea') {
                         return React.cloneElement(child, {
                             onChange: (...args) => {
                                 if (child.props.onChange) {
@@ -118,15 +118,7 @@ export class ValidatedCheckboxGroup extends React.Component {
     constructor(props) {
         super(props);
 
-        let inputs = 0;
         let fieldName;
-
-        React.Children.forEach(this.props.children, (child) => {
-            if(child.type === 'input') {
-                inputs++;
-                fieldName = child.props.name;
-            }
-        });
 
         const CHECKBOX_VALIDATION_RULES = {};
         CHECKBOX_VALIDATION_RULES[RequiredCheckboxValidator.name] = RequiredCheckboxValidator;
@@ -161,7 +153,7 @@ export class ValidatedCheckboxGroup extends React.Component {
         return (
             <div className="validated">
                 {React.Children.map(this.props.children, (child) => {
-                    if (child.type == 'input') {
+                    if (child.type === 'input') {
                         return React.cloneElement(child, {
                             onChange: (...args) => {
                                 if (child.props.onChange) {
@@ -232,14 +224,7 @@ export class ValidatedRadioGroup extends React.Component {
     constructor(props) {
         super(props);
 
-        let inputs = 0;
         let fieldName;
-        React.Children.forEach(this.props.children, (child) => {
-            if (child.type === 'input') {
-                inputs++;
-                fieldName = child.props.name;
-            }
-        });
 
         const REQUIRED_VALIDATION_RULE = {};
         REQUIRED_VALIDATION_RULE[RequiredRadioValidator.name] = RequiredRadioValidator;
@@ -272,7 +257,7 @@ export class ValidatedRadioGroup extends React.Component {
         return (
             <div className="validated">
                 {React.Children.map(this.props.children, (child) => {
-                    if (child.type == 'input') {
+                    if (child.type === 'input' && child.props.type === 'radio') {
                         return React.cloneElement(child, {
                             onChange: (...args) => {
                                 if (child.props.onChange) {
@@ -283,9 +268,27 @@ export class ValidatedRadioGroup extends React.Component {
                             onBlur: $this._onChangeOrBlur.bind($this),
                             ref: '_input'
                         })
+                    } else {
+                        // TODO: refactor to recursion
+                        if(typeof child.props.children !== 'undefined' && child.props.children.length > 0) {
+                            child.props.children.map(nestedChildElement => {
+                                if(nestedChildElement.type === 'input' && nestedChildElement.props.type === 'radio') {
+                                    return React.cloneElement(nestedChildElement, {
+                                        onChange: (...args) => {
+                                            if (nestedChildElement.props.onChange) {
+                                                nestedChildElement.props.onChange.apply(child, args);
+                                            }
+                                            $this._onChangeOrBlur(...args);
+                                        },
+                                        onBlur: $this._onChangeOrBlur.bind($this),
+                                        ref: '_input'
+                                    })
+                                }
+                                return nestedChildElement;
+                            })
+                        }
+                        return child;
                     }
-
-                    return child;
                 })}
                 <div className="validation-message">{this.state.validation.message}</div>
             </div>
