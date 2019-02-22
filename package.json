@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js -d -p",
     "start": "react-scripts start",
+    "start-w": "CHOKIDAR_USEPOLLING=true react-scripts start",
     "test": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
     "prepare": "npm run build"
@@ -28,12 +29,12 @@
   "dependencies": {},
   "peerDependencies": {
     "prop-types": "^15.5.4",
-    "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/core": "^7.3.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.4",
@@ -44,8 +45,8 @@
     "file-loader": "^3.0.1",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
     "react-scripts": "^2.0.5",
     "style-loader": "^0.23.1",
     "webpack-cli": "^3.2.1"

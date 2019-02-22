@@ -1,13 +1,27 @@
-version: '3'
+version: '3.2'
 
 services:
-  react-validated-lib:
+  react-validated:
     image: react-validated
-    container_name: react-validated-lib
+    container_name: react-validated
     build:
       context: ./
       dockerfile: dockerfile
     volumes:
-      - .:/react-validated
+      - .:/root/react-validated
+      - type: volume
+        source: node_modules
+        target: /root/react-validated/node_modules
+        volume:
+          nocopy: true
     ports:
-      - "3001:3001"
+      - "3000:3000"
+    networks: 
+      - net
+
+networks: 
+  net:
+    driver: bridge
+
+volumes:
+  node_modules:
