@@ -2,8 +2,10 @@ import React from 'react';
 
 import './styles.css';
 import RequiredValidator from './validators/required-validator';
+import RequiredCheckboxValidator from './validators/required-checkbox-validator';
 import RequiredRadioValidator from './validators/required-radio-validator';
 import { MinLengthValidator, MaxLengthValidator } from './validators/length-validator';
+import { MinCheckedValidator, MaxCheckedValidator } from './validators/checkbox-length-validator';
 
 const VALIDATION_RULES = {};
 VALIDATION_RULES[RequiredValidator.name] = RequiredValidator;
@@ -102,6 +104,120 @@ export class ValidatedInput extends React.Component {
                 return false;
             }
         } 
+        // If we got this far, no rules were violated
+        this.setState({
+            validation: Object.assign({}, this.state.validation, {
+                message: null
+            })
+        });
+        return true;
+    }
+}
+
+export class ValidatedCheckboxGroup extends React.Component {
+    constructor(props) {
+        super(props);
+
+        let inputs = 0;
+        let fieldName;
+
+        React.Children.forEach(this.props.children, (child) => {
+            if(child.type === 'input') {
+                inputs++;
+                fieldName = child.props.name;
+            }
+        });
+
+        const CHECKBOX_VALIDATION_RULES = {};
+        CHECKBOX_VALIDATION_RULES[RequiredCheckboxValidator.name] = RequiredCheckboxValidator;
+        CHECKBOX_VALIDATION_RULES[MinCheckedValidator.name] = MinCheckedValidator;
+        CHECKBOX_VALIDATION_RULES[MaxCheckedValidator.name] = MaxCheckedValidator;
+
+        const validation = { rules: [] };
+        for (var property in props) {
+            if (CHECKBOX_VALIDATION_RULES.hasOwnProperty(property)) {
+                let message = (typeof props[property] === 'string' && props[property]) ||
+                    (typeof props[property] === 'object' && props[property].message) ||
+                    CHECKBOX_VALIDATION_RULES[property].message;
+                let params = typeof props[property] === 'object' && props[property].params;
+                let configuredRule = {
+                    name: CHECKBOX_VALIDATION_RULES[property].name,
+                    message: message,
+                    params: params,
+                    field: fieldName
+                };
+                configuredRule.validate = CHECKBOX_VALIDATION_RULES[property].validate.bind(configuredRule);
+                // console.log('configured rule', configuredRule);
+                validation.rules.push(configuredRule)
+            }
+        }
+        this.state = {
+            validation
+        }
+    }
+
+    render = () => {
+        const $this = this;
+        return (
+            <div className="validated">
+                {React.Children.map(this.props.children, (child) => {
+                    if (child.type == 'input') {
+                        return React.cloneElement(child, {
+                            onChange: (...args) => {
+                                if (child.props.onChange) {
+                                    child.props.onChange.apply(child, args);
+                                }
+                                $this._onChangeOrBlur(...args);
+                            },
+                            onBlur: $this._onChangeOrBlur.bind($this),
+                            ref: '_input'
+                        })
+                    }
+
+                    return child;
+                })}
+                <div className="validation-message">{this.state.validation.message}</div>
+            </div>
+        )
+    }
+
+    validate = () => {
+        // console.log('this.refs', this.refs);
+        return this._validate(this.refs._input, this.refs._input.value);
+    }
+
+    _onChangeOrBlur = (event) => {
+        //console.log('_onChange', event);
+        const target = event.target;
+        this._validate(target, target.value);
+    }
+
+    _validate = (target, value) => {
+        const values = [];
+        
+        this.props.children.forEach((child) => {
+            if(typeof child === 'object') {
+               values.push(child.props.checked);
+            }
+        });
+
+        if (!this.state.validation || !this.state.validation.rules || !this.state.validation.rules.length) {
+            return true;
+        }
+
+        for (var index = 0; index < this.state.validation.rules.length; index++) {
+            let rule = this.state.validation.rules[index];
+            let result = rule.validate(values);
+            if (!result.success) {
+                this.setState({
+                    validation: Object.assign({}, this.state.validation, {
+                        message: result.message
+                    })
+                });
+                return false;
+            }
+        }
+
         // If we got this far, no rules were violated
         this.setState({
             validation: Object.assign({}, this.state.validation, {
