@@ -152,8 +152,8 @@ export class ValidatedCheckboxGroup extends React.Component {
         const $this = this;
         return (
             <div className="validated">
-                {React.Children.map(this.props.children, (child) => {
-                    if (child.type === 'input') {
+                {this.recursiveMapChildElements(this.props.children, (child) => {
+                    if (child.type === 'input' && child.props.type === 'checkbox') {
                         return React.cloneElement(child, {
                             onChange: (...args) => {
                                 if (child.props.onChange) {
@@ -165,12 +165,27 @@ export class ValidatedCheckboxGroup extends React.Component {
                             ref: '_input'
                         })
                     }
-
                     return child;
                 })}
                 <div className="validation-message">{this.state.validation.message}</div>
             </div>
         )
+    }
+    // TODO: refactor to some util file
+    recursiveMapChildElements = (children, fn) => {
+        return React.Children.map(children, child => {
+            if (!React.isValidElement(child)) {
+                return child;
+            }
+        
+            if (child.props.children) {
+                child = React.cloneElement(child, {
+                children: this.recursiveMapChildElements(child.props.children, fn)
+                });
+            }
+        
+            return fn(child);
+        });
     }
 
     validate = () => {
@@ -187,11 +202,11 @@ export class ValidatedCheckboxGroup extends React.Component {
     _validate = (target, value) => {
         const values = [];
         
-        this.props.children.forEach((child) => {
-            if(typeof child === 'object') {
-               values.push(child.props.checked);
+        this.recursiveMapChildElements(this.props.children, (child) => {
+            if(child.type === 'input') {
+                values.push(child.props.checked);
             }
-        });
+        })
 
         if (!this.state.validation || !this.state.validation.rules || !this.state.validation.rules.length) {
             return true;
