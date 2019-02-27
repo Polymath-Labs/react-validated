@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 
-import { ValidatedInput, 
-  ValidatedRadioGroup,
-  ValidatedCheckboxGroup,
-  ValidatedForm } from '../index.lib';
+import { ValidatedInput, ValidatedForm } from '../index.lib';
 import 'bootstrap/dist/css/bootstrap.css'
 
 export default class App extends Component {
@@ -71,10 +68,12 @@ export default class App extends Component {
   }
 
   handleCheckboxChange = (event) => {
-    if(this.state.ingredients.indexOf(event.target.value) !== -1) {
-      this.setState({ingredients: this.state.ingredients.filter((ingredient) => {
-        return ingredient !== event.target.value;
-      })});
+    if (this.state.ingredients.indexOf(event.target.value) !== -1) {
+      this.setState({
+        ingredients: this.state.ingredients.filter((ingredient) => {
+          return ingredient !== event.target.value;
+        })
+      });
     } else {
       this.setState({
         ingredients: [...this.state.ingredients, event.target.value]
@@ -123,146 +122,6 @@ export default class App extends Component {
                   </div>
                 </div>
                 <div className="form-group row">
-                  <label htmlFor="inlineRadioOptions" className="col-2 text-right col-form-label">Pizza size:</label>
-                  <div className="col-10">
-                    <ValidatedRadioGroup required>
-                      <div className="form-check form-check-inline">
-                        <input
-                          name="size"
-                          id="size1"
-                          type="radio"
-                          value="small"
-                          className="form-check-input"
-                          checked={this.state.size === 'small'}
-                          onChange={this.onChange}
-                        />
-                        <label className="form-check-label" htmlFor="size1">
-                          Small
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          id="size2"
-                          name="size"
-                          type="radio"
-                          value="medium"
-                          className="form-check-input"
-                          checked={this.state.size === 'medium'}
-                          onChange={this.onChange}
-                        />
-                        <label className="form-check-label" htmlFor="size2">
-                          Medium
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          id="size3"
-                          name="size"
-                          type="radio"
-                          value="large"
-                          className="form-check-input"
-                          checked={this.state.size === 'large'}
-                          onChange={this.onChange}
-                        />
-                        <label className="form-check-label" htmlFor="size3">
-                          Large
-                        </label>
-                      </div>
-                    </ValidatedRadioGroup>
-                  </div>
-                </div>
-                <div className="form-group row">
-                  <label htmlFor="inlineRadioOptions" className="col-2 text-right col-form-label">Ingredients:</label>
-                  <div className="col-10">
-                    <ValidatedCheckboxGroup required min-checked={{ params: 2 }} max-checked={{ params: 3 }}>
-                      <div className="form-check form-check-inline">
-                        <input
-                          id="ingredient1"
-                          type="checkbox"
-                          name="ingredients"
-                          value="peppers"
-                          className="form-check-input"
-                          checked={this.state.ingredients.indexOf('peppers') > -1}
-                          onChange={this.handleCheckboxChange}
-                        />
-                        <label className="form-check-label" htmlFor="ingredient1">
-                          Green Peppers
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          id="ingredient2"
-                          type="checkbox"
-                          name="ingredients"
-                          value="onions"
-                          className="form-check-input"
-                          checked={this.state.ingredients.indexOf('onions') > -1}
-                          onChange={this.handleCheckboxChange}
-                        />
-                        <label className="form-check-label" htmlFor="ingredient2">
-                          Onions
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          id="ingredient3"
-                          type="checkbox"
-                          name="ingredients"
-                          value="mushrooms"
-                          className="form-check-input"
-                          checked={this.state.ingredients.indexOf('mushrooms') > -1}
-                          onChange={this.handleCheckboxChange}
-                        />
-                        <label className="form-check-label" htmlFor="ingredient3">
-                          Mushrooms
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          id="ingredient4"
-                          type="checkbox"
-                          name="ingredients"
-                          className="form-check-input"
-                          value="garlic"
-                          checked={this.state.ingredients.indexOf('garlic') > -1}
-                          onChange={this.handleCheckboxChange}
-                        />
-                        <label className="form-check-label" htmlFor="ingredient4">
-                          Garlic
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input 
-                          type="checkbox"
-                          id="ingredient5"
-                          name="ingredients"
-                          className="form-check-input"
-                          value="olives"
-                          checked={this.state.ingredients.indexOf('olives') > -1}
-                          onChange={this.handleCheckboxChange}
-                        />
-                        <label className="form-check-label" htmlFor="ingredient5">
-                          Olives
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input 
-                          id="ingredient6"
-                          type="checkbox"
-                          name="ingredients"
-                          className="form-check-input"
-                          value="pineapples"
-                          checked={this.state.ingredients.indexOf('pineapples') > -1}
-                          onChange={this.handleCheckboxChange}
-                        />
-                        <label className="form-check-label" htmlFor="ingredient6">
-                          Pineapples
-                        </label>
-                      </div>
-                    </ValidatedCheckboxGroup>
-                  </div>
-                </div>
-                <div className="form-group row">
                   <div className="col-10 offset-2">
                     <button type="submit" className="btn btn-success">Save</button>
                   </div>
@@ -290,22 +149,6 @@ export default class App extends Component {
                   <div className="col-10">
                     <input type="number" className="form-control" id="maxLength" placeholder="Enter a max length"
                       name="maxLength" onChange={this.onChange} value={this.state.maxLength}
-                    />
-                  </div>
-                </div>
-                <div className="form-group row">
-                  <label htmlFor="minChecked" className="col-2 text-right col-form-label">Min Checked:</label>
-                  <div className="col-10">
-                    <input type="number" className="form-control" id="minChecked" placeholder="Minimum checked values"
-                      name="minChecked" onChange={this.onChange} value={this.state.minChecked}
-                    />
-                  </div>
-                </div>
-                <div className="form-group row">
-                  <label htmlFor="maxChecked" className="col-2 text-right col-form-label">Max Checked:</label>
-                  <div className="col-10">
-                    <input type="number" className="form-control" id="maxChecked" placeholder="Maximum checked values"
-                      name="maxChecked" onChange={this.onChange} value={this.state.maxChecked}
                     />
                   </div>
                 </div>
