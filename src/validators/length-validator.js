@@ -4,7 +4,7 @@ class _MinLengthValidator {
     message = '"{field}" must be at least {params} in length';
     params = 1;
     validate(value) {
-        const valid = !value || (!!value && value.length >= this.params) ;
+        const valid = !value || value.length >= this.params;
         return {
             success: valid,
             message: this.message.replace(/{field}/g, this.field).replace(/{params}/g, this.params)
@@ -18,7 +18,7 @@ class _MaxLengthValidator {
     message = '"{field}" must be less than {params} in length';
     params = 1;
     validate(value) {
-        const valid = !value || (!!value && value.length <= this.params);
+        const valid = !value || value.length <= this.params;
         return {
             success: valid,
             message: this.message.replace(/{field}/g, this.field).replace(/{params}/g, this.params)
