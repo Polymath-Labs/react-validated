@@ -8,7 +8,7 @@ module.exports = {
     entry: path.join(__dirname, "./src/index.lib.js"),
     output: {
         path: path.join(__dirname, './dist'),
-        filename: 'react-validated.js',
+        filename: 'index.js',
         library: libraryName,
         libraryTarget: 'umd',
         publicPath: '/dist/',
