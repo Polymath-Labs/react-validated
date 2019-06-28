@@ -165,7 +165,7 @@ export class ValidatedForm extends React.Component {
 }
 
 const _extractFieldLabelFromName = (name) => {
-    const letters = name.split('');
+    const letters = (name || '').split('');
     const processedLetters = [];
     letters.forEach((letter, index) => {
         if (index === 0) {
