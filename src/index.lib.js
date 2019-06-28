@@ -19,7 +19,7 @@ export class ValidatedInput extends React.Component {
         React.Children.forEach(this.props.children, (child) => {
             if (child.type === 'input' || child.type === 'textarea') {
                 inputs++;
-                fieldName = child.props.name;
+                fieldName = this.props.fieldLabel || _extractFieldLabelFromName(child.props.name);
             }
         });
         if (inputs > 1) {
@@ -163,3 +163,23 @@ export class ValidatedForm extends React.Component {
         if (allValid && this.props.onSubmit) this.props.onSubmit(event);
     }
 }
+
+const _extractFieldLabelFromName = (name) => {
+    const letters = (name || '').split('');
+    const processedLetters = [];
+    letters.forEach((letter, index) => {
+        if (index === 0) {
+            processedLetters.push(letter.toUpperCase());
+            return;
+        }
+        if (letter === letter.toUpperCase()) {
+            if (letters[index - 1] !== letters[index - 1].toUpperCase()) {
+                processedLetters.push(' ');
+            }
+            processedLetters.push(letter);
+            return;
+        }
+        processedLetters.push(letter);
+    });
+    return processedLetters.join('');
+};
