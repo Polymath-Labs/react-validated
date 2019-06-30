@@ -10,7 +10,7 @@ module.exports = {
         path: path.join(__dirname, './dist'),
         filename: 'index.js',
         library: libraryName,
-        libraryTarget: 'commonjs',
+        libraryTarget: 'commonjs2',
         publicPath: '/dist/',
         umdNamedDefine: true
     },
