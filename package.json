@@ -1,6 +1,6 @@
 {
   "name": "react-validated",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Polymath Labs React form validation library",
   "main": "dist/index.js",
   "scripts": {
