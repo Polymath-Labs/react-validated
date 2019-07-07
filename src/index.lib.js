@@ -52,37 +52,50 @@ export class ValidatedInput extends React.Component {
     render = () => {
         const $this = this;
         return (
-            <div className="validated">
-                {React.Children.map(this.props.children, (child) => {
-                    if (child.type === 'input' || child.type === 'textarea') {
-                        return React.cloneElement(child, {
-                            onChange: (...args) => {
-                                if (child.props.onChange) {
-                                    child.props.onChange.apply(child, args);
+            <React.Fragment>
+                <div className="validated">
+                    {React.Children.map(this.props.children, (child) => {
+                        if (child.type === 'input' || child.type === 'textarea') {
+                            return React.cloneElement(child, {
+                                onChange: (...args) => {
+                                    if (child.props.onChange) {
+                                        child.props.onChange.apply(child, args);
+                                    }
+                                    $this._onChangeOrBlur(...args);
+                                },
+                                onBlur: $this._onChangeOrBlur.bind($this),
+                                ref: (input) => {
+                                    if (input && this.props.relatedRefs && !this.props.relatedRefs.find(ref => ref === input)) {
+                                        this.props.relatedRefs.push(input);
+                                    }
+                                    this.refs = {
+                                        '_input': input
+                                    };
                                 }
-                                $this._onChangeOrBlur(...args);
-                            },
-                            onBlur: $this._onChangeOrBlur.bind($this),
-                            ref: '_input'
-                        })
-                    }
+                            })
+                        }
 
-                    return child;
-                })}
-                <div className="validation-message">{this.state.validation.message}</div>
-            </div>
+                        return child;
+                    })}
+                    {(!this.props.relatedRefs || this.props.relatedRefs[0] === this.refs._input) && (
+                        <div className="validation-message">{this.state.validation.message}</div>
+                    )}
+                </div>
+            </React.Fragment>
         )
     }
 
     validate = () => {
         // console.log('this.refs', this.refs);
-        return this._validate(this.refs._input, this.refs._input.value);
+        const target = this.refs._input;
+        const value = target.type === 'radio' || target.type === 'checkbox' ? _getValueFromRelatedRefs(this.props.relatedRefs) : target.value;
+        return this._validate(target, value);
     }
 
     _onChangeOrBlur = (event) => {
         //console.log('_onChange', event);
         const target = event.target;
-        const value = target.value;
+        const value = target.type === 'radio' || target.type === 'checkbox' ? _getValueFromRelatedRefs(this.props.relatedRefs) : target.value;
         this._validate(target, value);
     }
 
@@ -123,6 +136,7 @@ export class ValidatedForm extends React.Component {
 
     render = () => {
         this.validatedChildren = [];
+        this.relatedRefs = {};
         return (
             <form onSubmit={this._onSubmit} className={this.props.className}>
                 {this._identifyValidatedChildren(this.props.children)}
@@ -137,14 +151,23 @@ export class ValidatedForm extends React.Component {
             //console.log('child', [child.props && child.props.id, child]);
             //debugger;
             if (child.type === ValidatedInput) {
+                const inputType = child.props.children && child.props.children.props.type;
+                if (inputType === 'radio' || inputType === 'checkbox') {
+                    const inputName = child.props.children && child.props.children.props.name;
+                    this.relatedRefs[inputName] = this.relatedRefs[inputName] || [];
+                    return React.cloneElement(child, {
+                        ref: validated => $this.validatedChildren.push(validated),
+                        relatedRefs: this.relatedRefs[inputName]
+                    });
+                }
                 return React.cloneElement(child, {
                     ref: validated => $this.validatedChildren.push(validated)
-                })
+                });
             }
             if (child.props && child.props.children) {
                 return React.cloneElement(child, {
                     children: $this._identifyValidatedChildren(child.props.children)
-                })
+                });
             }
             return child; //React.cloneElement(child);
         });
@@ -163,6 +186,10 @@ export class ValidatedForm extends React.Component {
         if (allValid && this.props.onSubmit) this.props.onSubmit(event);
     }
 }
+
+const _getValueFromRelatedRefs = (refs) => {
+    return [].map.call(refs, ref => ref.checked && ref.value).filter(ref => ref);
+};
 
 const _extractFieldLabelFromName = (name) => {
     const letters = (name || '').split('');

@@ -3,3 +3,7 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.checkbox-group .validation-message, .radio-group .validation-message {
+  position: absolute;
+}

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { ValidatedInput, ValidatedForm } from '../index.lib';
 import 'bootstrap/dist/css/bootstrap.css'
+import '../css/test-portal.css';
 
 export default class App extends Component {
 
@@ -118,6 +119,68 @@ export default class App extends Component {
                         onChange={this.onChange}
                       />
                     </ValidatedInput>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label htmlFor="message" className="col-2 text-right col-form-label">
+                    Radio
+                  </label>
+                  <div className="col-10 radio-group">
+                    <div className="form-check form-check-inline position-static">
+                      <ValidatedInput required>
+                        <input type="radio" className="form-check-input" id="radio-1"
+                          name="radio" onChange={this.onChange} value='value1'
+                        />
+                      </ValidatedInput>
+                      <label className="form-check-label" htmlFor="radio-1">First</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <ValidatedInput required>
+                        <input type="radio" className="form-check-input" id="radio-2"
+                          name="radio" onChange={this.onChange} value='value2'
+                        />
+                      </ValidatedInput>
+                      <label className="form-check-label" htmlFor="radio-2">Second</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <ValidatedInput required>
+                        <input type="radio" className="form-check-input" id="radio-3"
+                          name="radio" onChange={this.onChange} value='value3'
+                        />
+                      </ValidatedInput>
+                      <label className="form-check-label" htmlFor="radio-3">Third</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group row">
+                  <label htmlFor="message" className="col-2 text-right col-form-label">
+                    Checkbox
+                  </label>
+                  <div className="col-10 checkbox-group">
+                    <div className="form-check form-check-inline position-static">
+                      <ValidatedInput required min-length={{ params: 1 }} max-length={{ params: 2 }}>
+                        <input type="checkbox" className="form-check-input" id="checkbox-1"
+                          name="checkbox" onChange={this.onChange} value='value1'
+                        />
+                      </ValidatedInput>
+                      <label className="form-check-label" htmlFor="checkbox-1">First</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <ValidatedInput required min-length={{ params: 1 }} max-length={{ params: 2 }}>
+                        <input type="checkbox" className="form-check-input" id="checkbox-2"
+                          name="checkbox" onChange={this.onChange} value='value2'
+                        />
+                      </ValidatedInput>
+                      <label className="form-check-label" htmlFor="checkbox-2">Second</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <ValidatedInput required min-length={{ params: 1 }} max-length={{ params: 2 }}>
+                        <input type="checkbox" className="form-check-input" id="checkbox-3"
+                          name="checkbox" onChange={this.onChange} value='value3'
+                        />
+                      </ValidatedInput>
+                      <label className="form-check-label" htmlFor="checkbox-3">Third</label>
+                    </div>
                   </div>
                 </div>
                 <div className="form-group row">
