@@ -130,6 +130,18 @@ export class ValidatedForm extends React.Component {
         )
     }
 
+    validate() {
+      let allValid = true;
+
+        for (var index = 0; index < this.validatedChildren.length; index++) {
+            let validatedChild = this.validatedChildren[index];
+            if (!validatedChild) continue;
+            allValid &= validatedChild.validate();
+        }
+
+        return allValid;
+    }
+
     _identifyValidatedChildren = (children) => {
         const $this = this;
         return React.Children.map(children, (child) => {
@@ -152,14 +164,7 @@ export class ValidatedForm extends React.Component {
 
     _onSubmit = (event) => {
         event.preventDefault();
-        let allValid = true;
-
-        for (var index = 0; index < this.validatedChildren.length; index++) {
-            let validatedChild = this.validatedChildren[index];
-            if (!validatedChild) continue;
-            allValid &= validatedChild.validate();
-        }
-
+        let allValid = this.validate();
         if (allValid && this.props.onSubmit) this.props.onSubmit(event);
     }
 }
